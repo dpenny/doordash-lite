@@ -16,17 +16,16 @@ class CustomerListView(mixins.ListModelMixin):
   model = Customer
 
   # Get all the customers in the database
-  def get(self, request):
+  def list(self, request):
     customers = Customer.objects.all()
     serializer = CustomerSerializer(customers, many=True)
     return Response(serializer.data)
-
 
 class FoodItemListView(mixins.ListModelMixin):
   model = FoodItem
 
   # Get all the food items available
-  def get(self, request):
+  def list(self, request):
     food_items = FoodItem.objects.filter(available=True)
     serializer = FoodItemSerializer(food_items, many=True)
     return Response(serializer.data)
