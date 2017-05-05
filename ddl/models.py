@@ -32,16 +32,14 @@ class OrderItem(models.Model):
   item = models.ForeignKey(FoodItem, blank=True)
   quantity = models.IntegerField()
 
-# Get all the customers in the database
 class Customer(models.Model):
   class Meta:
     db_table = 'customer'
   first_name = models.TextField()
   last_name = models.TextField()
   email = models.TextField()
-  phone_number = models.IntegerField()
-  def get(self, request):
-    return self.objects.all()
+  phone_number = models.TextField()
+
 
   #Create a new customer in the database
   @classmethod
@@ -57,20 +55,19 @@ class Restaurant(models.Model):
 
   name = models.TextField()
   menu = models.ForeignKey(Menu, blank=True)
+  address = models.ForeignKey(Address)
+  delivery_fee = models.IntegerField()
 
 class OrderCart(models.Model):
   class Meta:
     db_table = 'order_cart'
 
+  #future fields: promo code, etc
   order_items = models.ManyToManyField(OrderItem, blank=True)
 
-  #Get all the order carts in the database
-  # could modify this to return either list with filter or all if no filters are specified
-  def get(self, request):
-    return self.objects.all()
 
   #Add food items to the order cart
-  #  sketch???
+  #sketch???
   def update(self, order_item_list):
     self.order_items.append(order_item_list)
     self.save()
@@ -87,12 +84,14 @@ class Order(models.Model):
     db_table = 'order_table'
 
   customer = models.ForeignKey(Customer)
+  restaurant = models.ForeignKey(Restaurant)
   order_cart = models.ForeignKey(OrderCart)
   address = models.ForeignKey(Address)
   has_checked_out = models.BooleanField()
 
   def update_address(self, address):
     self.address = address
+    # logic here to check if new address is valid #
     self.save()
 
 
