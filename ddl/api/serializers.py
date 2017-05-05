@@ -18,33 +18,37 @@ class MenuSerializer(serializers.ModelSerializer):
     fields = ('id', 'category')
 
 class RestaurantSerializer(serializers.ModelSerializer):
-    """Serializer to map the Model instance into JSON format."""
 
   class Meta:
       """Meta class to map serializer's fields with the model fields."""
-    model = Menu
+    model = Restaurant
     fields = ('id', 'name', 'menu')
 
 class OrderSerializer(serializers.ModelSerializer):
-    """Serializer to map the Model instance into JSON format."""
 
   class Meta:
-      """Meta class to map serializer's fields with the model fields."""
-    model = Menu
+    model = Order
     fields = ('id', 'order_items')
 
 class FoodItemSerializer(serializers.ModelSerializer):
-    """Serializer to map the Model instance into JSON format."""
 
   class Meta:
       """Meta class to map serializer's fields with the model fields."""
-    model = Menu
+    model = FoodItem
     fields = ('id', 'name', 'price')
 
 class OrderItemSerializer(serializers.ModelSerializer):
-    """Serializer to map the Model instance into JSON format."""
 
   class Meta:
       """Meta class to map serializer's fields with the model fields."""
-    model = Menu
-    fields = ('id', 'item', 'quantity')
+    model = FoodItem
+    fields = ('id', 'quantity')
+
+class OrderCartSerializer(serializers.ModelSerializer):
+	order_items = serializers.ListField(
+   order=OrderItemSerializer,
+	)
+
+  class Meta:
+    model = OrderCart
+    fields = ('id', 'order_items')

@@ -4,6 +4,13 @@ from __future__ import unicode_literals
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
 
+class Address(models.Model):
+  class Meta:
+    db_table = 'address_table'
+  address = models.TextField()
+  city = models.TextField()
+  state = models.TextField()
+
 
 class Menu(models.Model):
   class Meta:
@@ -25,6 +32,7 @@ class OrderItem(models.Model):
   item = models.ForeignKey(FoodItem, blank=True)
   quantity = models.IntegerField()
 
+# Get all the customers in the database
 class Customer(models.Model):
   class Meta:
     db_table = 'customer'
@@ -32,6 +40,8 @@ class Customer(models.Model):
   last_name = models.TextField()
   email = models.TextField()
   phone_number = models.IntegerField()
+  def get(self, request):
+    return self.objects.all()
 
   #Create a new customer in the database
   @classmethod
@@ -54,13 +64,35 @@ class OrderCart(models.Model):
 
   order_items = models.ManyToManyField(OrderItem, blank=True)
 
+  #Get all the order carts in the database
+  # could modify this to return either list with filter or all if no filters are specified
+  def get(self, request):
+    return self.objects.all()
+
+  #Add food items to the order cart
+  #  sketch???
+  def update(self, order_item_list):
+    self.order_items.append(order_item_list)
+    self.save()
+
+  #Create a new ordercart
+  @classmethod
+  def create(cls, order_items):
+    order_cart = cls(order_items=order_items)
+    order_cart.save()
+    return order_cart
+
 class Order(models.Model):
   class Meta:
     db_table = 'order_table'
 
   customer = models.ForeignKey(Customer)
   order_cart = models.ForeignKey(OrderCart)
-  #add delivery once added to table
+  address = models.ForeignKey(Address)
+  has_checked_out = models.BooleanField()
 
+  def update_address(self, address):
+    self.address = address
+    self.save()
 
 
