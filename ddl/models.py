@@ -16,6 +16,7 @@ class FoodItem(models.Model):
     db_table = 'food_item'
   name = models.TextField()
   price = models.IntegerField()
+  available = models.BooleanField()
 
 class OrderItem(models.Model):
   class Meta:
@@ -32,6 +33,14 @@ class Customer(models.Model):
   email = models.TextField()
   phone_number = models.IntegerField()
 
+  #Create a new customer in the database
+  @classmethod
+  def create(cls, first_name, last_name, email, phone_number):
+    customer = cls(first_name=first_name, last_name= last_name,
+      email=email, phone_number=phone_number)
+    customer.save()
+    return customer
+
 class Restaurant(models.Model):
   class Meta:
     db_table = 'restaurant'
@@ -39,9 +48,19 @@ class Restaurant(models.Model):
   name = models.TextField()
   menu = models.ForeignKey(Menu, blank=True)
 
+class OrderCart(models.Model):
+  class Meta:
+    db_table = 'order_cart'
+
+  order_items = models.ManyToManyField(OrderItem, blank=True)
+
 class Order(models.Model):
   class Meta:
     db_table = 'order_table'
 
-  order_items = models.ManyToManyField(OrderItem, blank=True)
+  customer = models.ForeignKey(Customer)
+  order_cart = models.ForeignKey(OrderCart)
+  #add delivery once added to table
+
+
 
