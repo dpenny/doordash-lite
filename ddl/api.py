@@ -52,13 +52,9 @@ class OrderCartDetailView(DetailView, viewsets.ViewSetQ):
     serializer = OrderCartSerializer(customer)
     return Response(serializer.data)
 
-  # Check out an order cart
-  # is this the best place to put the function?
-  def checkout_order_cart(self, order_cart_id, request,  *args, **kwargs):
-     oc = OrderCart.objects.get(id=order_cart_id)
-     oc.has_checked_out = True
-     oc.save()
-     # do other checkout logic here
-    return True
+  def add_order_item_to_cart(self, order_cart_id, item_id_list):
+    oc = OrderCart.objects.get(id=order_cart_id)
+    oc.order_items.append(order_item_list)
+    oc.save()
 
 

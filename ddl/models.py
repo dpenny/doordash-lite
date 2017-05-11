@@ -65,13 +65,6 @@ class OrderCart(models.Model):
   #future fields: promo code, etc
   order_items = models.ManyToManyField(OrderItem, blank=True)
 
-
-  #Add food items to the order cart
-  #sketch???
-  def update(self, order_item_list):
-    self.order_items.append(order_item_list)
-    self.save()
-
   #Create a new ordercart
   @classmethod
   def create(cls, order_items):
@@ -88,10 +81,5 @@ class Order(models.Model):
   order_cart = models.ForeignKey(OrderCart)
   address = models.ForeignKey(Address)
   has_checked_out = models.BooleanField()
-
-  def update_address(self, address):
-    self.address = address
-    # logic here to check if new address is valid #
-    self.save()
 
 
