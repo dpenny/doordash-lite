@@ -38,10 +38,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_extensions',
-    'ddl.apps.DdlConfig',
     'rest_framework',
+    'rest_framework.authtoken',
+    'ddl',
 
-]
+] #    'ddl.apps.DdlConfig',
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -107,12 +109,21 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# http://getblimp.github.io/django-rest-framework-jwt/
 REST_FRAMEWORK = {
-    # Use Django's standard `django.contrib.auth` permissions,
-    # or allow read-only access for unauthenticated users.
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
-    ]
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ),
+}
+
+JWT_AUTH = {
+'JWT_SECRET_KEY': SECRET_KEY,
+'JWT_AUTH_HEADER_PREFIX': 'Bearer',
 }
 
 # Internationalization

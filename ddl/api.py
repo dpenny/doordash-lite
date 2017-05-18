@@ -1,24 +1,32 @@
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
-from api.serializers import CustomerSerializer, FoodItemSerializer
+from api_serializers.serializers import CustomerSerializer, FoodItemSerializer
 from rest_framework import mixins, viewsets
 from django.http import Http404
+from django.http import HttpResponse
+from django.core.exceptions import ObjectDoesNotExist
+from rest_framework.decorators import api_view
 
-from models import Customer, FoodItem, OrderCart
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
-class CustomerDetailView(DetailView, viewsets.ViewSet):
-  def get(self, request, customer_id, *args, **kwargs):
+from models import Consumer, FoodItem, OrderCart
+
+class CustomerDetailView(DetailView):
+  model = Consumer
+  def get(self, request, consumer_id, *args, **kwargs):
     customer = None
     try: 
-      customer = Customer.objects.get(id=customer_id)
+      customer = Consumer.objects.get(id=consumer_id)
     except ObjectDoesNotExist:
       raise Http404 
-    serializer = CustomerSerializer(customer)
-    return Response(serializer.data)
+    return HttpResponse('Hello, World!')
 
 
 class CustomerListView(mixins.ListModelMixin):
-  model = Customer
+  model = Consumer
 
   # Get all the customers in the database
   def list(self, request):
@@ -45,7 +53,7 @@ class OrderCartListView(mixins.ListModelMixin):
     return Response(serializer.data)
 
 
-class OrderCartDetailView(DetailView, viewsets.ViewSetQ):
+class OrderCartDetailView(DetailView):
   # Get the information for one specific order cart
   def get(self, request, order_cart_id, *args, **kwargs):
     oc = OrderCart.objects.get(id=order_cart_id)
